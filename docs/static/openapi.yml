@@ -4,6 +4,125 @@ info:
   name: ''
   description: ''
 paths:
+  /blog/blog/account_list:
+    get:
+      summary: Queries a list of AccountList items.
+      operationId: BlogBlogAccountList
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              creatorList:
+                type: object
+                properties:
+                  creatorList:
+                    type: array
+                    items:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /blog/blog/comments/{id}:
+    get:
+      summary: Queries a list of Comments items.
+      operationId: BlogBlogComments
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              body:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /blog/blog/follow_list:
+    get:
+      summary: Queries a list of FollowList items.
+      operationId: BlogBlogFollowList
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              followList:
+                type: object
+                properties:
+                  list:
+                    type: array
+                    items:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
   /blog/blog/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -44850,7 +44969,27 @@ paths:
       tags:
         - Query
 definitions:
+  blog.blog.AccountsList:
+    type: object
+    properties:
+      creatorList:
+        type: array
+        items:
+          type: string
+  blog.blog.FollowAddressList:
+    type: object
+    properties:
+      list:
+        type: array
+        items:
+          type: string
   blog.blog.MsgCreatePostResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+  blog.blog.MsgFollowCreatorResponse:
     type: object
     properties:
       id:
@@ -44871,6 +45010,33 @@ definitions:
         type: string
       body:
         type: string
+  blog.blog.QueryAccountListResponse:
+    type: object
+    properties:
+      creatorList:
+        type: object
+        properties:
+          creatorList:
+            type: array
+            items:
+              type: string
+  blog.blog.QueryCommentsResponse:
+    type: object
+    properties:
+      title:
+        type: string
+      body:
+        type: string
+  blog.blog.QueryFollowListResponse:
+    type: object
+    properties:
+      followList:
+        type: object
+        properties:
+          list:
+            type: array
+            items:
+              type: string
   blog.blog.QueryParamsResponse:
     type: object
     properties:

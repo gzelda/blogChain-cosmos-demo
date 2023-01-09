@@ -9,7 +9,20 @@
  * ---------------------------------------------------------------
  */
 
+export interface BlogAccountsList {
+  creatorList?: string[];
+}
+
+export interface BlogFollowAddressList {
+  list?: string[];
+}
+
 export interface BlogMsgCreatePostResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export interface BlogMsgFollowCreatorResponse {
   /** @format uint64 */
   id?: string;
 }
@@ -26,6 +39,19 @@ export interface BlogPost {
   id?: string;
   title?: string;
   body?: string;
+}
+
+export interface BlogQueryAccountListResponse {
+  creatorList?: BlogAccountsList;
+}
+
+export interface BlogQueryCommentsResponse {
+  title?: string;
+  body?: string;
+}
+
+export interface BlogQueryFollowListResponse {
+  followList?: BlogFollowAddressList;
 }
 
 /**
@@ -257,10 +283,59 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title blog/blog/genesis.proto
+ * @title blog/blog/account.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryAccountList
+   * @summary Queries a list of AccountList items.
+   * @request GET:/blog/blog/account_list
+   */
+  queryAccountList = (params: RequestParams = {}) =>
+    this.request<BlogQueryAccountListResponse, RpcStatus>({
+      path: `/blog/blog/account_list`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryComments
+   * @summary Queries a list of Comments items.
+   * @request GET:/blog/blog/comments/{id}
+   */
+  queryComments = (id: string, params: RequestParams = {}) =>
+    this.request<BlogQueryCommentsResponse, RpcStatus>({
+      path: `/blog/blog/comments/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryFollowList
+   * @summary Queries a list of FollowList items.
+   * @request GET:/blog/blog/follow_list
+   */
+  queryFollowList = (query?: { address?: string }, params: RequestParams = {}) =>
+    this.request<BlogQueryFollowListResponse, RpcStatus>({
+      path: `/blog/blog/follow_list`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *

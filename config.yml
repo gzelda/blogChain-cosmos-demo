@@ -4,6 +4,14 @@ accounts:
     coins: ["20000token", "200000000stake"]
   - name: bob
     coins: ["10000token", "100000000stake"]
+  - name: user1
+    coins: [ "10000token", "100000000stake" ]
+  - name: user2
+    coins: [ "10000token", "100000000stake" ]
+  - name: user3
+    coins: [ "10000token", "100000000stake" ]
+  - name: user4
+    coins: [ "10000token", "100000000stake" ]
 validators:
   - name: alice
     bonded: "100000000stake"

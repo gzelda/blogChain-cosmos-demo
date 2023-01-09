@@ -6,6 +6,8 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "blog/blog/params.proto";
 import "blog/blog/post.proto";
+import "blog/blog/account.proto";
+import "blog/blog/follow.proto";
 
 // this line is used by starport scaffolding # 1
 
@@ -20,6 +22,21 @@ service Query {
   // Queries a list of Posts items.
 	rpc Posts(QueryPostsRequest) returns (QueryPostsResponse) {
 		option (google.api.http).get = "/blog/blog/posts";
+	}
+
+// Queries a list of AccountList items.
+	rpc AccountList(QueryAccountListRequest) returns (QueryAccountListResponse) {
+		option (google.api.http).get = "/blog/blog/account_list";
+	}
+
+// Queries a list of FollowList items.
+	rpc FollowList(QueryFollowListRequest) returns (QueryFollowListResponse) {
+		option (google.api.http).get = "/blog/blog/follow_list";
+	}
+
+// Queries a list of Comments items.
+	rpc Comments(QueryCommentsRequest) returns (QueryCommentsResponse) {
+		option (google.api.http).get = "/blog/blog/comments/{id}";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -46,4 +63,28 @@ message QueryPostsResponse {
   // Adding pagination to response
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
+message QueryAccountListRequest {
+}
+
+message QueryAccountListResponse {
+  AccountsList creatorList = 1;
+}
+
+message QueryFollowListRequest {
+	string address = 1;
+}
+
+message QueryFollowListResponse {
+	FollowAddressList followList = 1;
+}
+
+message QueryCommentsRequest {
+  uint64 id = 1;
+}
+
+message QueryCommentsResponse {
+  string title = 1;
+  string body = 2;
+}
+
 // this line is used by starport scaffolding # 3

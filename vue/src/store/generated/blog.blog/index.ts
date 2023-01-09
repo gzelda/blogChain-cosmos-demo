@@ -1,10 +1,12 @@
 import { Client, registry, MissingWalletError } from 'blog-client-ts'
 
+import { AccountsList } from "blog-client-ts/blog.blog/types"
+import { FollowAddressList } from "blog-client-ts/blog.blog/types"
 import { Params } from "blog-client-ts/blog.blog/types"
 import { Post } from "blog-client-ts/blog.blog/types"
 
 
-export { Params, Post };
+export { AccountsList, FollowAddressList, Params, Post };
 
 function initClient(vuexGetters) {
 	return new Client(vuexGetters['common/env/getEnv'], vuexGetters['common/wallet/signer'])
@@ -37,8 +39,13 @@ const getDefaultState = () => {
 	return {
 				Params: {},
 				Posts: {},
+				AccountList: {},
+				FollowList: {},
+				Comments: {},
 				
 				_Structure: {
+						AccountsList: getStructure(AccountsList.fromPartial({})),
+						FollowAddressList: getStructure(FollowAddressList.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						Post: getStructure(Post.fromPartial({})),
 						
@@ -80,6 +87,24 @@ export default {
 						(<any> params).query=null
 					}
 			return state.Posts[JSON.stringify(params)] ?? {}
+		},
+				getAccountList: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.AccountList[JSON.stringify(params)] ?? {}
+		},
+				getFollowList: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.FollowList[JSON.stringify(params)] ?? {}
+		},
+				getComments: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.Comments[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -163,6 +188,76 @@ export default {
 		},
 		
 		
+		
+		
+		 		
+		
+		
+		async QueryAccountList({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.BlogBlog.query.queryAccountList()).data
+				
+					
+				commit('QUERY', { query: 'AccountList', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryAccountList', payload: { options: { all }, params: {...key},query }})
+				return getters['getAccountList']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryAccountList API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryFollowList({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.BlogBlog.query.queryFollowList(query ?? undefined)).data
+				
+					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await client.BlogBlog.query.queryFollowList({...query ?? {}, 'pagination.key':(<any> value).pagination.next_key} as any)).data
+					value = mergeResults(value, next_values);
+				}
+				commit('QUERY', { query: 'FollowList', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryFollowList', payload: { options: { all }, params: {...key},query }})
+				return getters['getFollowList']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryFollowList API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryComments({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const client = initClient(rootGetters);
+				let value= (await client.BlogBlog.query.queryComments( key.id)).data
+				
+					
+				commit('QUERY', { query: 'Comments', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryComments', payload: { options: { all }, params: {...key},query }})
+				return getters['getComments']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryComments API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
 		async sendMsgCreatePost({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const client=await initClient(rootGetters)
@@ -173,6 +268,19 @@ export default {
 					throw new Error('TxClient:MsgCreatePost:Init Could not initialize signing client. Wallet is required.')
 				}else{
 					throw new Error('TxClient:MsgCreatePost:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
+		async sendMsgFollowCreator({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const client=await initClient(rootGetters)
+				const result = await client.BlogBlog.tx.sendMsgFollowCreator({ value, fee: {amount: fee, gas: "200000"}, memo })
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgFollowCreator:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgFollowCreator:Send Could not broadcast Tx: '+ e.message)
 				}
 			}
 		},
@@ -187,6 +295,19 @@ export default {
 					throw new Error('TxClient:MsgCreatePost:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgCreatePost:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgFollowCreator({ rootGetters }, { value }) {
+			try {
+				const client=initClient(rootGetters)
+				const msg = await client.BlogBlog.tx.msgFollowCreator({value})
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgFollowCreator:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgFollowCreator:Create Could not create message: ' + e.message)
 				}
 			}
 		},

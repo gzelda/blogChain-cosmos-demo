@@ -16,6 +16,12 @@ const (
 	// Keep track of the index of posts
 	PostKey      = "Post/value/"
 	PostCountKey = "Post/count/"
+
+	AccountKey     = "Account/account/"
+	AccountListKey = "Account/list/"
+
+	FollowerCountKey = "Follow/follower-count/"
+	FollowList       = "Follow/follow-list/"
 )
 
 func KeyPrefix(p string) []byte {

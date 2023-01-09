@@ -95,6 +95,86 @@ pagination:
   total: "1"
 ```
 
+follow
+```
+$ blogd tx blog follow-creator blog1yhrv9ejddwpp3ldp07qy2tw64h3s4uxer0kqd8 --from alice
+auth_info:
+  fee:
+    amount: []
+    gas_limit: "200000"
+    granter: ""
+    payer: ""
+  signer_infos: []
+  tip: null
+body:
+  extension_options: []
+  memo: ""
+  messages:
+  - '@type': /blog.blog.MsgFollowCreator
+    creator: blog13uqjan9d7wmzwtvzr42eu5lfhu0udq377wz2ml
+    followAddress: blog1yhrv9ejddwpp3ldp07qy2tw64h3s4uxer0kqd8
+  non_critical_extension_options: []
+  timeout_height: "0"
+signatures: []
+confirm transaction before signing and broadcasting [y/N]: y
+code: 0
+codespace: ""
+data: 12250A232F626C6F672E626C6F672E4D7367466F6C6C6F7743726561746F72526573706F6E7365
+events:
+- attributes:
+  - index: true
+    key: ZmVl
+    value: ""
+  - index: true
+    key: ZmVlX3BheWVy
+    value: YmxvZzEzdXFqYW45ZDd3bXp3dHZ6cjQyZXU1bGZodTB1ZHEzNzd3ejJtbA==
+  type: tx
+- attributes:
+  - index: true
+    key: YWNjX3NlcQ==
+    value: YmxvZzEzdXFqYW45ZDd3bXp3dHZ6cjQyZXU1bGZodTB1ZHEzNzd3ejJtbC8xMA==
+  type: tx
+- attributes:
+  - index: true
+    key: c2lnbmF0dXJl
+    value: QzYvTDEralpSaTh0TExJQmJaL08ycTlITzdWTFpPMnBXakNWc2RqeWNuMGxsdGhWZ2czSjluVkw0bkRPU3pWczkrNkYwTmlScGVDWHNYb1hTWStvcFE9PQ==
+  type: tx
+- attributes:
+  - index: true
+    key: YWN0aW9u
+    value: L2Jsb2cuYmxvZy5Nc2dGb2xsb3dDcmVhdG9y
+  type: message
+- attributes: []
+  type: |-
+    Follow/follow-list/blog13uqjan9d7wmzwtvzr42eu5lfhu0udq377wz2ml/
+    +blog1yhrv9ejddwpp3ldp07qy2tw64h3s4uxer0kqd8/blog13uqjan9d7wmzwtvzr42eu5lfhu0udq377wz2ml
+gas_used: "56702"
+gas_wanted: "200000"
+height: "2238"
+info: ""
+logs:
+- events:
+  - attributes: []
+    type: |-
+      Follow/follow-list/blog13uqjan9d7wmzwtvzr42eu5lfhu0udq377wz2ml/
+      +blog1yhrv9ejddwpp3ldp07qy2tw64h3s4uxer0kqd8/blog13uqjan9d7wmzwtvzr42eu5lfhu0udq377wz2ml
+  - attributes:
+    - key: action
+      value: /blog.blog.MsgFollowCreator
+    type: message
+  log: ""
+  msg_index: 0
+raw_log: '[{"msg_index":0,"events":[{"type":"Follow/follow-list/blog13uqjan9d7wmzwtvzr42eu5lfhu0udq377wz2ml/\n+blog1yhrv9ejddwpp3ldp07qy2tw64h3s4uxer0kqd8/blog13uqjan9d7wmzwtvzr42eu5lfhu0udq377wz2ml","attributes":null},{"type":"message","attributes":[{"key":"action","value":"/blog.blog.MsgFollowCreator"}]}]}]'
+timestamp: ""
+tx: null
+txhash: F6BA1DEB765222E8C995D5C12821C0F1E67BFB6E4E1DBD82C2A3BF46637C7F4B
+
+$ blogd q blog follow-list blog13uqjan9d7wmzwtvzr42eu5lfhu0udq377wz2ml                 
+followList:
+  list:
+  - blog1yhrv9ejddwpp3ldp07qy2tw64h3s4uxer0kqd8
+
+```
 
 ### Configure
 

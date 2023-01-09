@@ -44,6 +44,34 @@ func (k Keeper) SetPostCount(ctx sdk.Context, count uint64) {
 	store.Set(byteKey, bz)
 }
 
+func (k Keeper) AppendNewAccount(ctx sdk.Context, creator string) {
+	// Get the store using storeKey (which is "blog") and PostCountKey (which is "Post/count/")
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.AccountKey))
+
+	// Convert the AccountKey to bytes
+	byteKey := []byte(types.AccountKey + creator)
+
+	storeAccountList := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.AccountListKey))
+	byteKeyAccountList := []byte(types.AccountListKey)
+	// Convert count from uint64 to string and get bytes
+	bzCreator := store.Get(byteKey)
+	bzCreatorList := storeAccountList.Get(byteKeyAccountList)
+
+	//ctx.EventManager().EmitEvents(sdk.Events{
+	//	sdk.NewEvent(string(bzCreator)),
+	//})
+
+	if len(bzCreator) == 0 {
+		store.Set(byteKey, []byte("1"))
+
+		var creatorList types.AccountsList
+		k.cdc.MustUnmarshal(bzCreatorList, &creatorList)
+		creatorList.CreatorList = append(creatorList.CreatorList, creator)
+		bzCreatorList = k.cdc.MustMarshal(&creatorList)
+		storeAccountList.Set(byteKeyAccountList, bzCreatorList)
+	}
+}
+
 func (k Keeper) AppendPost(ctx sdk.Context, post types.Post) uint64 {
 	// Get the current number of posts in the store
 	count := k.GetPostCount(ctx)
@@ -66,5 +94,8 @@ func (k Keeper) AppendPost(ctx sdk.Context, post types.Post) uint64 {
 
 	// Update the post count
 	k.SetPostCount(ctx, count+1)
+
+	k.AppendNewAccount(ctx, post.Creator)
+
 	return count
 }

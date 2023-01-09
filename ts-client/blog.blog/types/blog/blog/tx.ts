@@ -14,6 +14,15 @@ export interface MsgCreatePostResponse {
   id: number;
 }
 
+export interface MsgFollowCreator {
+  creator: string;
+  followAddress: string;
+}
+
+export interface MsgFollowCreatorResponse {
+  id: number;
+}
+
 function createBaseMsgCreatePost(): MsgCreatePost {
   return { creator: "", title: "", body: "" };
 }
@@ -128,10 +137,116 @@ export const MsgCreatePostResponse = {
   },
 };
 
+function createBaseMsgFollowCreator(): MsgFollowCreator {
+  return { creator: "", followAddress: "" };
+}
+
+export const MsgFollowCreator = {
+  encode(message: MsgFollowCreator, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.followAddress !== "") {
+      writer.uint32(18).string(message.followAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgFollowCreator {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgFollowCreator();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.followAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgFollowCreator {
+    return {
+      creator: isSet(object.creator) ? String(object.creator) : "",
+      followAddress: isSet(object.followAddress) ? String(object.followAddress) : "",
+    };
+  },
+
+  toJSON(message: MsgFollowCreator): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.followAddress !== undefined && (obj.followAddress = message.followAddress);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgFollowCreator>, I>>(object: I): MsgFollowCreator {
+    const message = createBaseMsgFollowCreator();
+    message.creator = object.creator ?? "";
+    message.followAddress = object.followAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgFollowCreatorResponse(): MsgFollowCreatorResponse {
+  return { id: 0 };
+}
+
+export const MsgFollowCreatorResponse = {
+  encode(message: MsgFollowCreatorResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgFollowCreatorResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgFollowCreatorResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgFollowCreatorResponse {
+    return { id: isSet(object.id) ? Number(object.id) : 0 };
+  },
+
+  toJSON(message: MsgFollowCreatorResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = Math.round(message.id));
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<MsgFollowCreatorResponse>, I>>(object: I): MsgFollowCreatorResponse {
+    const message = createBaseMsgFollowCreatorResponse();
+    message.id = object.id ?? 0;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   CreatePost(request: MsgCreatePost): Promise<MsgCreatePostResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  FollowCreator(request: MsgFollowCreator): Promise<MsgFollowCreatorResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -139,11 +254,18 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.CreatePost = this.CreatePost.bind(this);
+    this.FollowCreator = this.FollowCreator.bind(this);
   }
   CreatePost(request: MsgCreatePost): Promise<MsgCreatePostResponse> {
     const data = MsgCreatePost.encode(request).finish();
     const promise = this.rpc.request("blog.blog.Msg", "CreatePost", data);
     return promise.then((data) => MsgCreatePostResponse.decode(new _m0.Reader(data)));
+  }
+
+  FollowCreator(request: MsgFollowCreator): Promise<MsgFollowCreatorResponse> {
+    const data = MsgFollowCreator.encode(request).finish();
+    const promise = this.rpc.request("blog.blog.Msg", "FollowCreator", data);
+    return promise.then((data) => MsgFollowCreatorResponse.decode(new _m0.Reader(data)));
   }
 }
 
