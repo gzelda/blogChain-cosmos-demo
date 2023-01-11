@@ -1,10 +1,14 @@
 // THIS FILE IS GENERATED AUTOMATICALLY. DO NOT MODIFY.
 
 import BlogBlog from './blog.blog'
+import BlogNameservice from './blog.nameservice'
+import BlogNft from './blog.nft'
 
 
 export default { 
   BlogBlog: load(BlogBlog, 'blog.blog'),
+  BlogNameservice: load(BlogNameservice, 'blog.nameservice'),
+  BlogNft: load(BlogNft, 'blog.nft'),
   
 }
 
